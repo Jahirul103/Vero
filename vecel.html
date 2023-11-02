@@ -1,0 +1,44 @@
+<form action="/generate-chatbot-link" method="post">
+    <input type="text" name="prompt" placeholder="Enter your prompt">
+    <input type="text" name="business_data" placeholder="Enter your business data">
+    <input type="submit" value="Generate Chatbot Link">
+</form>
+
+<div id="chatbot-link"></div>
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Add your page's title and other meta tags here -->
+</head>
+<body>
+    <div id="chatbot-link">Chatbot Link: Loading...</div>
+
+    <script>
+        fetch("/generate-chatbot-link")
+            .then(response => response.json())
+            .then(chatbotLink => {
+                // Display the chatbot link to the visitor
+                document.querySelector("#chatbot-link").innerHTML = Chatbot Link: ${chatbotLink};
+            });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Link</title>
+</head>
+<body>
+    <div id="chatbot-link">Chatbot Link: Loading...</div>
+
+    <script>
+        // Get the chatbot link from the backend application
+        fetch("/generate-chatbot-link")
+            .then(response => response.json())
+            .then(chatbotLink => {
+                // Display the chatbot link to the visitor
+                document.querySelector("#chatbot-link").innerHTML = Chatbot Link: ${chatbotLink};
+            });
+    </script>
+</body>
+</html>
