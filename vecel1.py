@@ -1,31 +1,42 @@
-import json
 import requests
 
-from openai import OpenAIApi
+# Define the URL of the ChatGPT API
+API_URL = "https://api.openai.com/v1/engines/davinci/completions"
 
-class BackendApplication:
-    def init(self, database):
-        self.database = database
+# Define the headers for the API request
+headers = {
+    "Authorization": "Bearer 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"
+}
 
-        # Create an OpenAI API object
-        self.openai = OpenAIApi(openai_api_key="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")
+# Define a function to prompt the chatbot
+def prompt_chatbot(business_data):
+    """Prompts the ChatGPT API with the given business data and returns the chatbot's response."""
 
-    def generate_chatbot_link(self, prompt, business_data):
-        # Extract the prompt and business data from the database
-        prompt = self.database.get_prompt()
-        business_data = self.database.get_business_data()
+    # Create the request body
+    request_body = {
+        "prompt": "Create a chatbot for my business based on the following data:\n\n" + business_data,
+        "temperature": 0.7,
+        "max_tokens": 1024,
+        "top_p": 1.0,
+        "frequency_penalty": 0.0,
+        "presence_penalty": 0.0
+    }
 
-        # Generate a ChatGPT prompt based on the extracted data
-        chatgpt_prompt = f"Generate a chatbot based on the following prompt: {prompt} and business data: {business_data}"
+    # Make the API request
+    response = requests.post(API_URL, headers=headers, json=request_body)
 
-        # Send the ChatGPT prompt to the ChatGPT API and receive the response
-        chatgpt_response = self.openai.generate(chatgpt_prompt)
+    # Check if the request was successful
+    if response.status_code == 200:
+        return response.json()["choices"][0]["text"]
+    else:
+        raise Exception("Failed to prompt ChatGPT: {}".format(response.status_code))
 
-        # Save the ChatGPT response to the database
-        self.database.save_chatbot_response(chatgpt_response)
 
-        # Generate a relative link or unique identifier for the chatbot
-        chatbot_link = f"/chatbot/{chatgpt_response.id}"
+# Prompt the user for their business data
+business_data = input("Enter your business data:\n")
 
-        # Return the chatbot link
-        return chatbot_link
+# Prompt the chatbot
+chatbot_response = prompt_chatbot(business_data)
+
+# Print the chatbot's response
+print("Chatbot response:\n\n" + chatbot_response)
